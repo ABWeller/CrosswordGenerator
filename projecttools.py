@@ -63,12 +63,48 @@ def generatePlayGrid(gridWidth, gridHeight, wallchance = 25):
         return generatePlayGrid(gridWidth, gridHeight, wallchance)
 
 
+#todo add the ability to change a tile to wall if there is only a "1 word" space
+#todo across section almost works, except there is a problem counting near the edges
 def FindPerfectWord(grid):
     """
     iterates through grid to find down and across locations and a suitable word for each while respecting crossover
     create a dict? with the direction+number as key and word as value? but it needs a clue as reference too
     :param grid: list:
-    :return:
+    :return: dict: acrosslist, downlist
+    """
+    acrosslist = {}
+    tempwordstartindex = 0
+    acrossiterations = 1
+
+    # find across locations
+    for tIndex, tile in enumerate(grid):
+        if tile == blank:
+            if grid[tIndex -1] == wall or grid[tIndex -1] == "\n" or grid[tIndex -1] == None:
+                tempwordstartindex = tIndex
+        if tile == wall and tempwordstartindex >= 0:
+            wordsize = tIndex - tempwordstartindex
+
+            # word size finding logic goes here, replace worsize in dict with actual word
+
+            acrosslist[acrossiterations] = [wordsize, "hint"]
+
+            # reset variables
+            acrossiterations += 1
+            tempwordstartindex = -10
+        else:
+            continue
+
+
+
+
+
+    return acrosslist
+
+def GetHints(worddict):
+    """
+
+    :param worddict: dict: raw dict with only words to lookup. format: {number: [word, hint]}
+    :return: dict: updated dict with hints added
     """
     return
 
@@ -83,3 +119,5 @@ for i, tile in enumerate(newGrid):
     formatted += tile
 
 print(formatted)
+
+print(FindPerfectWord(newGrid))
