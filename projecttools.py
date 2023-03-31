@@ -1,4 +1,6 @@
 import random
+import wordsorter as ws
+
 
 playGrid = []
 blank = "_ "
@@ -65,11 +67,12 @@ def generatePlayGrid(gridWidth, gridHeight, wallchance = 25):
 
 #todo add the ability to change a tile to wall if there is only a "1 word" space
 #todo across section almost works, except there is a problem counting near the edges
-def FindPerfectWord(grid):
+def FindPerfectWord(grid, wordsizedict):
     """
     iterates through grid to find down and across locations and a suitable word for each while respecting crossover
     create a dict? with the direction+number as key and word as value? but it needs a clue as reference too
     :param grid: list:
+    :param wordsizedict: dict:
     :return: dict: acrosslist, downlist
     """
     acrosslist = {}
@@ -84,9 +87,17 @@ def FindPerfectWord(grid):
         if tile == wall and tempwordstartindex >= 0:
             wordsize = tIndex - tempwordstartindex
 
-            # word size finding logic goes here, replace worsize in dict with actual word
+            # word size finding logic goes here, replace wordsize in dict with actual word
+            if wordsize > 1:
+                nextword = wordsizedict[wordsize][random.randint(0, len(wordsizedict[wordsize]) -1)]
 
-            acrosslist[acrossiterations] = [wordsize, "hint"]
+                acrosslist[acrossiterations] = [nextword, "hint"]
+            else:
+                # somehow fill in space with wall
+                # may need to lower across iterations by 1 to preserve the numbering
+                acrossiterations -=1
+                pass
+
 
             # reset variables
             acrossiterations += 1
@@ -94,16 +105,19 @@ def FindPerfectWord(grid):
         else:
             continue
 
+        #todo add the more complicated "down" word that are only viable if they have the right letters intersecting from across words
+
 
 
 
 
     return acrosslist
 
-def GetHints(worddict):
+def GetHints(wordsdict):
     """
+    where will this get hints? internet search? scrape wikipedia?
 
-    :param worddict: dict: raw dict with only words to lookup. format: {number: [word, hint]}
+    :param wordsdict: dict: raw dict with only words to lookup. format: {number: [word, hint]}
     :return: dict: updated dict with hints added
     """
     return
@@ -120,4 +134,5 @@ for i, tile in enumerate(newGrid):
 
 print(formatted)
 
-print(FindPerfectWord(newGrid))
+print(FindPerfectWord(newGrid, ws.CreateWordLengthDict("words_alpha_short")))
+
