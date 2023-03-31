@@ -69,6 +69,7 @@ def generatePlayGrid(gridWidth, gridHeight, wallchance = 25):
 
 #todo add the ability to change a tile to wall if there is only a "1 word" space
 #todo across section almost works, except there is a problem counting near the edges
+#todo change the across word search to ignore duplicate word
 def FindPerfectWord(grid, wordsizedict):
     """
     iterates through grid to find down and across locations and a suitable word for each while respecting crossover
