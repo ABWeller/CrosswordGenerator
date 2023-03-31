@@ -1,5 +1,7 @@
 import random
 import wordsorter as ws
+import timemodule as tm
+import time
 
 
 playGrid = []
@@ -124,7 +126,7 @@ def GetHints(wordsdict):
 
 
 
-
+starttime = time.time()
 
 formatted = ""
 newGrid = generatePlayGrid(15, 15, 50)
@@ -136,3 +138,4 @@ print(formatted)
 
 print(FindPerfectWord(newGrid, ws.CreateWordLengthDict("words_alpha_short")))
 
+tm.compareTime(starttime)
