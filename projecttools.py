@@ -81,22 +81,35 @@ def FindPerfectWord(grid, wordsizedict):
     acrosslist = {}
     tempwordstartindex = 0
     acrossiterations = 1
+    words_added = [""]
+    nextword = ""
+    fixedgrid = grid
 
     # find across locations
     for tIndex, tile in enumerate(grid):
+
+        # check if the tile is a blank with a wall-like tile that precedes it (first tile of a word)
         if tile == blank:
             if grid[tIndex -1] == wall or grid[tIndex -1] == "\n" or grid[tIndex -1] == None:
                 tempwordstartindex = tIndex
-        if tile == wall and tempwordstartindex >= 0:
+
+        # check if the tile is a "word end" tile consisting of a wall like tile with a blank tile preceding it
+        elif (tile == wall or tile == "\n") and tempwordstartindex >= 0:
             wordsize = tIndex - tempwordstartindex
 
             # word size finding logic goes here, replace wordsize in dict with actual word
             if wordsize > 1:
-                nextword = wordsizedict[wordsize][random.randint(0, len(wordsizedict[wordsize]) -1)]
 
+                # makes sure next word is not a duplicate
+                # todo this needs a condition if there is no new word of a given size
+                while nextword in words_added or nextword == None:
+                    nextword = wordsizedict[wordsize][random.randint(0, len(wordsizedict[wordsize]) - 1)]
                 acrosslist[acrossiterations] = [nextword, "hint"]
+                words_added.append(nextword)
+
             else:
                 # somehow fill in space with wall
+                fixedgrid[tempwordstartindex] = wall
                 # may need to lower across iterations by 1 to preserve the numbering
                 acrossiterations -=1
                 pass
@@ -106,7 +119,7 @@ def FindPerfectWord(grid, wordsizedict):
             acrossiterations += 1
             tempwordstartindex = -10
         else:
-            continue
+            pass
 
         #todo add the more complicated "down" word that are only viable if they have the right letters intersecting from across words
 
@@ -114,7 +127,7 @@ def FindPerfectWord(grid, wordsizedict):
 
 
 
-    return acrosslist
+    return acrosslist, fixedgrid
 
 def GetHints(wordsdict):
     """
@@ -127,16 +140,3 @@ def GetHints(wordsdict):
 
 
 
-starttime = time.time()
-
-formatted = ""
-newGrid = generatePlayGrid(15, 15, 50)
-
-for i, tile in enumerate(newGrid):
-    formatted += tile
-
-print(formatted)
-
-print(FindPerfectWord(newGrid, ws.CreateWordLengthDict("words_alpha_short")))
-
-tm.compareTime(starttime)

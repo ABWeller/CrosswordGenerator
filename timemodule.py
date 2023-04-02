@@ -16,8 +16,10 @@ def compareTime(starttime, file="timelog"):
             for times in f:
                 timeslist.append(float(times))
             f.writelines(str(newtime) + "\n")
-
-        oldtimerecord = sorted(timeslist)[0]
+        try:
+            oldtimerecord = sorted(timeslist)[0]
+        except Exception as e:
+            print(e)
         percentage_difference = abs((newtime - oldtimerecord) / oldtimerecord) * 100
 
         # if new time is worse than best time
